@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  power-lines-analysis-service:
+    build:
+      context: .
+      target: production
+    image: power-lines-analysis-service
+    container_name: power-lines-analysis-service
