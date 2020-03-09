@@ -7,10 +7,10 @@ namespace PowerLinesAnalysisService.Analysis
         const double euler = 2.71828;
         public double GetProbability(int randomVariable, double averageRateOfSuccess)
         {
-            return Math.Pow(euler, -2) * Math.Pow(averageRateOfSuccess, randomVariable) / factorial(randomVariable);
+            return Math.Pow(euler, -averageRateOfSuccess) * Math.Pow(averageRateOfSuccess, randomVariable) / Factorial(randomVariable);
         }
 
-        private int factorial(int n)
+        private int Factorial(int n)
         {
             int value = 1;
             for (int i = 1; i <= n; i++)
