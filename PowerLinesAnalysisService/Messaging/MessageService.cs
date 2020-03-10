@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using PowerLinesAnalysisService.Analysis;
 
 namespace PowerLinesAnalysisService.Messaging
 {
@@ -51,8 +50,6 @@ namespace PowerLinesAnalysisService.Messaging
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Results.Add(result);
                 dbContext.SaveChanges();
-                // var analysisService = scope.ServiceProvider.GetRequiredService<IAnalysisService>();
-                // analysisService.GetMatchOdds(fixture.FixtureId);
             }
         }        
     }

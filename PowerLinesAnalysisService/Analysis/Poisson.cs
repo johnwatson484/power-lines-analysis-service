@@ -5,6 +5,7 @@ namespace PowerLinesAnalysisService.Analysis
     public class Poisson
     {
         const double euler = 2.71828;
+        
         public double GetProbability(int randomVariable, double averageRateOfSuccess)
         {
             return Math.Pow(euler, -averageRateOfSuccess) * Math.Pow(averageRateOfSuccess, randomVariable) / Factorial(randomVariable);
