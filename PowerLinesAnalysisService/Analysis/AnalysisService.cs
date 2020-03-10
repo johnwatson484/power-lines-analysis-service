@@ -5,9 +5,9 @@ namespace PowerLinesAnalysisService.Analysis
 {
     public class AnalysisService : IAnalysisService
     {
-        public void GetMatchOdds(int fixtureId)
+        public MatchOdds GetMatchOdds(Fixture fixture)
         {
-            // TODO add call to analysis service when defined
+            return new MatchOdds();
         }
     }
 }
