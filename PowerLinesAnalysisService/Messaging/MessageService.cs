@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace PowerLinesAnalysisService.Messaging
 {
@@ -47,19 +48,16 @@ namespace PowerLinesAnalysisService.Messaging
             var result = JsonConvert.DeserializeObject<Result>(message);
             using (var scope = serviceScopeFactory.CreateScope())
             {
-                // try
-                // {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                try
+                {
                     dbContext.Results.Add(result);
                     dbContext.SaveChanges();
-                // }
-                // catch(SqlException ex)
-                // {
-                //     if (ex.Message.Contains("UniqueConstraint"))
-                //     {
-                //         Console.WriteLine("{0} v {1} {2} exists, skipping", result.HomeTeam, result.AwayTeam, result.Date.Year);
-                //     }
-                // }
+                }
+                catch (DbUpdateException)
+                {
+                    Console.WriteLine("{0} v {1} {2} exists, skipping", result.HomeTeam, result.AwayTeam, result.Date.Year);
+                }
             }
         }
     }
