@@ -32,6 +32,12 @@ namespace PowerLinesAnalysisService.Migrations
                 {
                     table.PrimaryKey("PK_results", x => x.resultId);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_results_date_homeTeam_awayTeam",
+                table: "results",
+                columns: new[] { "date", "homeTeam", "awayTeam" },
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

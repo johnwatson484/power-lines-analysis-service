@@ -81,6 +81,9 @@ namespace PowerLinesAnalysisService.Migrations
 
                     b.HasKey("ResultId");
 
+                    b.HasIndex("Date", "HomeTeam", "AwayTeam")
+                        .IsUnique();
+
                     b.ToTable("results");
                 });
 #pragma warning restore 612, 618

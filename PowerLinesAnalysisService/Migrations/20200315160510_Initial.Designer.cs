@@ -10,7 +10,7 @@ using PowerLinesAnalysisService.Data;
 namespace PowerLinesAnalysisService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200308171056_Initial")]
+    [Migration("20200315160510_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,9 @@ namespace PowerLinesAnalysisService.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("ResultId");
+
+                    b.HasIndex("Date", "HomeTeam", "AwayTeam")
+                        .IsUnique();
 
                     b.ToTable("results");
                 });

@@ -9,6 +9,12 @@ namespace PowerLinesAnalysisService.Data
             : base(options)
         {
         }
-        public DbSet<Result> Results { get; set; } 
+        public DbSet<Result> Results { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Result>()
+                .HasIndex(x => new { x.Date, x.HomeTeam, x.AwayTeam }).IsUnique();
+        }
     }
 }
