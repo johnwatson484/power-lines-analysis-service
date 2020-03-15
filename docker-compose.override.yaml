@@ -14,7 +14,7 @@ services:
     ports:
       - "5001:5001"
     environment:
-      ConnectionStrings__PowerLinesAnalysisService: "Server=power-lines-analysis-service-postgres;Port=5432;Database=power_lines_analysis;User Id=postgres;Password=postgres;"
+      ConnectionStrings__PowerLinesAnalysisService: "Server=power-lines-analysis-service-postgres;Port=6001;Database=power_lines_analysis;User Id=postgres;Password=postgres;"
       Message__Host: power-lines-message
       Message__Port: 5672
       Message__ResultQueue: results
@@ -45,7 +45,7 @@ services:
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "6001:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
