@@ -31,7 +31,7 @@ namespace PowerLinesAnalysisService.Messaging
         public void Listen()
         {
             CreateConnectionToQueue();
-            consumer.Listen(new Action<string>(ReceiveMessage));            
+            consumer.Listen(new Action<string>(ReceiveMessage));
         }
 
         public void CreateConnectionToQueue()
@@ -47,10 +47,20 @@ namespace PowerLinesAnalysisService.Messaging
             var result = JsonConvert.DeserializeObject<Result>(message);
             using (var scope = serviceScopeFactory.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Results.Add(result);
-                dbContext.SaveChanges();
+                // try
+                // {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    dbContext.Results.Add(result);
+                    dbContext.SaveChanges();
+                // }
+                // catch(SqlException ex)
+                // {
+                //     if (ex.Message.Contains("UniqueConstraint"))
+                //     {
+                //         Console.WriteLine("{0} v {1} {2} exists, skipping", result.HomeTeam, result.AwayTeam, result.Date.Year);
+                //     }
+                // }
             }
-        }        
+        }
     }
 }
