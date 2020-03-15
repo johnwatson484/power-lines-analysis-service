@@ -9,7 +9,7 @@ services:
     entrypoint: >
       sh -c "
         scripts/wait-for.sh power-lines-message:5672 --
-        scripts/wait-for.sh power-lines-analysis-service-postgres:5432 --
+        scripts/wait-for.sh power-lines-analysis-service-postgres:6001 --
         dotnet watch --project ./PowerLinesAnalysisService run --urls "http://*:5001""
     ports:
       - "5001:5001"
