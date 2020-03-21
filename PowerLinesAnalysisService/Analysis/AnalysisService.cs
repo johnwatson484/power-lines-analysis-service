@@ -15,6 +15,7 @@ namespace PowerLinesAnalysisService.Analysis
         List<Result> matches;
         GoalDistribution goalDistribution;
         Poisson poisson;
+        OddsCalculator oddsService;
 
         public AnalysisService(ApplicationDbContext dbContext)
         {
@@ -55,11 +56,8 @@ namespace PowerLinesAnalysisService.Analysis
 
             goalDistribution.CalculateDistribution();
 
-
-            // calc 1x2
-
-            // calc likely score
-            return new MatchOdds();
+            oddsService = new OddsCalculator(fixture.FixtureId, goalDistribution);
+            return oddsService.GetMatchOdds();
         }
 
         private void SetStartDate(DateTime fixtureDate)

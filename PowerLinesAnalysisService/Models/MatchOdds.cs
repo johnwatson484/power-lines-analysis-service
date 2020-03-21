@@ -1,3 +1,5 @@
+using PowerLinesAnalysisService.Models;
+
 public class MatchOdds
 {
     public int FixtureId { get; set; }
@@ -7,4 +9,9 @@ public class MatchOdds
     public int HomeGoals { get; set; }
     public int AwayGoals { get; set; }
     public decimal ExpectedGoals { get; set; }
+
+    public MatchOdds(int fixtureId)
+    {
+        FixtureId = fixtureId;
+    }
 }
