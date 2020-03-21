@@ -10,12 +10,17 @@ namespace PowerLinesAnalysisService.Analysis
     {
         ApplicationDbContext dbContext;
         const int yearsToAnalyse = 6;
+        const int maxGoalsPerGame = 5;
         DateTime startDate;
         List<Result> matches;
+        GoalDistribution goalDistribution;
+        Poisson poisson;
 
         public AnalysisService(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
+            goalDistribution = new GoalDistribution();
+            poisson = new Poisson();
         }
 
         public MatchOdds GetMatchOdds(Fixture fixture)
@@ -40,7 +45,16 @@ namespace PowerLinesAnalysisService.Analysis
             var homeDefenceStrength = GetDefenceStrength(averageHomeConceded, totalAverageHomeConceded);
             var awayExpectedGoals = GetExpectedGoals(awayAttackStrength, homeDefenceStrength, totalAverageAwayGoals);
 
-            // poisson for all goals for both teams
+            for(int goals = 0; goals <= maxGoalsPerGame; goals++)
+            {
+                var homeGoalProbability = new GoalProbability(goals, (decimal)poisson.GetProbability(goals, (double)homeExpectedGoals));
+                goalDistribution.HomeGoalProbabilities.Add(homeGoalProbability);
+                var awayGoalProbability = new GoalProbability(goals, (decimal)poisson.GetProbability(goals, (double)awayExpectedGoals));
+                goalDistribution.AwayGoalProbabilities.Add(awayGoalProbability);
+            }
+
+            goalDistribution.CalculateDistribution();
+
 
             // calc 1x2
 
