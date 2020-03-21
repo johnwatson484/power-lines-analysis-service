@@ -1,43 +1,44 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using PowerLinesAnalysisService.Data;
 using PowerLinesAnalysisService.Models;
 
 namespace PowerLinesAnalysisService.Analysis
 {
     public class AnalysisService : IAnalysisService
     {
+        ApplicationDbContext dbContext;
+        const int yearsToAnalyse = 6;
+        DateTime startDate;
+        List<Result> matches;
+
+        public AnalysisService(ApplicationDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         public MatchOdds GetMatchOdds(Fixture fixture)
         {
-            // calc avg home goals
+            SetStartDate(fixture.Date);
+            SetAnalysisMatches(fixture.Division);
 
-            // calc avg away goals
+            var totalAverageHomeGoals = GetTotalAverageHomeGoals();
+            var totalAverageAwayGoals = GetTotalAverageAwayGoals();
+            var totalAverageHomeConceded = totalAverageAwayGoals;
+            var totalAverageAwayConceded = totalAverageHomeGoals;
 
-            // calc avg goals for home team
+            var averageHomeGoals = GetAverageHomeGoals(fixture.HomeTeam);
+            var homeAttackStrength = GetAttackStrength(averageHomeGoals, totalAverageHomeGoals);
+            var averageAwayConceded = GetAverageAwayConceded(fixture.AwayTeam);
+            var awayDefenceStrength = GetDefenceStrength(averageAwayConceded, totalAverageAwayConceded);
+            var homeExpectedGoals = GetExpectedGoals(homeAttackStrength, awayDefenceStrength, totalAverageHomeGoals);
 
-            // calc avg goals for away team
-
-            // calc avg conceded by home team
-
-            // calc avg conceded by away team
-
-            // Number of goals scored at home last season by the home team / number of home games played
-
-            // Home team's average goals per home game / average home league goals per game
-
-            // Number of goals conceded away last season by the away team / number of away games played
-
-            // Away team's average goals conceded per away game / average away league goals conceded per game
-
-            // Home team attack strength * away team defence strength * average number of home goals
-
-            // Number of goals scored away last season by the away team / number of away games played
-
-            // Away team's average goals per away game / average away league goals per game
-
-            // Home team's average goals conceded per home game / number of home games played
-
-            // Home team's average goals conceded per home game / average home league goals per game
-
-            // Away team attack strength * home team defence strength * average number of away goals
+            var averageAwayGoals = GetAverageAwayGoals(fixture.AwayTeam);
+            var awayAttackStrength = GetAttackStrength(averageAwayGoals, totalAverageAwayGoals);
+            var averageHomeConceded = GetAverageHomeConceded(fixture.HomeTeam);
+            var homeDefenceStrength = GetDefenceStrength(averageHomeConceded, totalAverageHomeConceded);
+            var awayExpectedGoals = GetExpectedGoals(awayAttackStrength, homeDefenceStrength, totalAverageAwayGoals);
 
             // poisson for all goals for both teams
 
@@ -45,6 +46,66 @@ namespace PowerLinesAnalysisService.Analysis
 
             // calc likely score
             return new MatchOdds();
+        }
+
+        private void SetStartDate(DateTime fixtureDate)
+        {
+            // TODO adjust to august
+            startDate = fixtureDate.AddYears(-6).Date;
+        }
+
+        private void SetAnalysisMatches(string division)
+        {
+            matches = dbContext.Results.Where(x => x.Division == division && x.Date >= startDate).ToList();
+        }
+
+        private decimal GetTotalAverageHomeGoals()
+        {
+            return decimal.Divide(matches.Sum(x => x.FullTimeHomeGoals), matches.Count);
+        }
+
+        private decimal GetTotalAverageAwayGoals()
+        {
+            return decimal.Divide(matches.Sum(x => x.FullTimeAwayGoals), matches.Count);
+        }
+
+        private decimal GetAverageHomeGoals(string homeTeam)
+        {
+            var homeMatches = matches.Where(x => x.HomeTeam == homeTeam).ToList();
+            return decimal.Divide(homeMatches.Sum(x => x.FullTimeHomeGoals), homeMatches.Count);
+        }
+
+        private decimal GetAverageAwayGoals(string awayTeam)
+        {
+            var awayMatches = matches.Where(x => x.AwayTeam == awayTeam).ToList();
+            return decimal.Divide(awayMatches.Sum(x => x.FullTimeAwayGoals), awayMatches.Count);
+        }
+        
+        private decimal GetAverageHomeConceded(string homeTeam)
+        {
+            var homeMatches = matches.Where(x => x.HomeTeam == homeTeam).ToList();
+            return decimal.Divide(homeMatches.Sum(x => x.FullTimeAwayGoals), homeMatches.Count);
+        }
+
+        private decimal GetAverageAwayConceded(string awayTeam)
+        {
+            var awayMatches = matches.Where(x => x.AwayTeam == awayTeam).ToList();
+            return decimal.Divide(awayMatches.Sum(x => x.FullTimeHomeGoals), awayMatches.Count);
+        }
+
+        private decimal GetAttackStrength(decimal averageGoals, decimal totalAverageGoals)
+        {
+            return decimal.Divide(averageGoals, totalAverageGoals);
+        }
+
+        private decimal GetDefenceStrength(decimal averageConceded, decimal totalAverageConceded)
+        {
+            return decimal.Divide(averageConceded, totalAverageConceded);
+        }
+
+        private decimal GetExpectedGoals(decimal teamAttackStrength, decimal oppositionDefenceStrength, decimal totalAverageGoals)
+        {
+            return teamAttackStrength * oppositionDefenceStrength * totalAverageGoals;
         }
     }
 }
