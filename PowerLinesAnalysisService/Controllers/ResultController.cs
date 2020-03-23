@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PowerLinesAnalysisService.Data;
-using PowerLinesAnalysisService.Models;
+using System.Linq;
 
 namespace PowerLinesAnalysisService.Controllers
 {
@@ -15,9 +16,9 @@ namespace PowerLinesAnalysisService.Controllers
         {
             this.dbContext = dbContext;
         }
-        public ActionResult<IEnumerable<Result>> Get()
+        public ActionResult<DateTime> LastResultDate()
         {
-            return dbContext.Results;
+            return dbContext.Results.Max(x => x.Created);
         }
     }
 }

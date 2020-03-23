@@ -47,5 +47,8 @@ namespace PowerLinesAnalysisService.Models
 
         [Column("awayOddsAverage")]
         public decimal AwayOddsAverage { get; set; }
+
+        [Column("created")]
+        public DateTime Created { get; set; }
     }
 }
