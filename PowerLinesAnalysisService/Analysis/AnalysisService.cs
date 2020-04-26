@@ -41,7 +41,6 @@ namespace PowerLinesAnalysisService.Analysis
 
         private void SetStartDate(DateTime fixtureDate)
         {
-            // TODO adjust to august
             startDate = fixtureDate.AddYears(-6).Date;
         }
 
