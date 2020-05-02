@@ -50,5 +50,10 @@ namespace PowerLinesAnalysisService.Models
 
         [Column("created")]
         public DateTime Created { get; set; }
+
+        public Result()
+        {
+            Created = DateTime.UtcNow;
+        }
     }
 }
