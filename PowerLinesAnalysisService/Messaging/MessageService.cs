@@ -7,24 +7,29 @@ using Microsoft.Extensions.Hosting;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using PowerLinesAnalysisService.Analysis;
 
 namespace PowerLinesAnalysisService.Messaging
 {
     public class MessageService : BackgroundService, IMessageService
     {
-        private IConsumer consumer;
+        private IConsumer resultsConsumer;
+        private IConsumer analysisConsumer;
         private MessageConfig messageConfig;
         private IServiceScopeFactory serviceScopeFactory;
+        private ISender sender;
 
-        public MessageService(IConsumer consumer, MessageConfig messageConfig, IServiceScopeFactory serviceScopeFactory)
+        public MessageService(IConsumer resultsConsumer, IConsumer analysisConsumer, ISender sender, MessageConfig messageConfig, IServiceScopeFactory serviceScopeFactory)
         {
-            this.consumer = consumer;
+            this.resultsConsumer = resultsConsumer;
+            this.analysisConsumer = analysisConsumer;
             this.messageConfig = messageConfig;
             this.serviceScopeFactory = serviceScopeFactory;
+            this.sender = sender;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        {
+        {            
             Listen();
             return Task.CompletedTask;
         }
@@ -32,18 +37,23 @@ namespace PowerLinesAnalysisService.Messaging
         public void Listen()
         {
             CreateConnectionToQueue();
-            consumer.Listen(new Action<string>(ReceiveMessage));
+            resultsConsumer.Listen(new Action<string>(ReceiveResultMessage));
+            analysisConsumer.Listen(new Action<string>(ReceiveAnalysisMessage));
         }
 
         public void CreateConnectionToQueue()
         {
-            Task.Run(() =>
-                consumer.CreateConnectionToQueue(new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.ResultUsername, messageConfig.ResultPassword).ToString(),
-                messageConfig.ResultQueue))
-            .Wait();
+            sender.CreateConnectionToQueue(new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.OddsUsername, messageConfig.OddsPassword).ToString(),
+                messageConfig.OddsQueue);
+
+            resultsConsumer.CreateConnectionToQueue(new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.ResultUsername, messageConfig.ResultPassword).ToString(),
+                messageConfig.ResultQueue);
+
+            analysisConsumer.CreateConnectionToQueue(new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.AnalysisUsername, messageConfig.AnalysisPassword).ToString(),
+                messageConfig.AnalysisQueue);
         }
 
-        private void ReceiveMessage(string message)
+        private void ReceiveResultMessage(string message)
         {
             var result = JsonConvert.DeserializeObject<Result>(message);
             using (var scope = serviceScopeFactory.CreateScope())
@@ -57,6 +67,24 @@ namespace PowerLinesAnalysisService.Messaging
                 catch (DbUpdateException)
                 {
                     Console.WriteLine("{0} v {1} {2} exists, skipping", result.HomeTeam, result.AwayTeam, result.Date.Year);
+                }
+            }
+        }
+
+        private void ReceiveAnalysisMessage(string message)
+        {
+            var fixture = JsonConvert.DeserializeObject<Fixture>(message);
+            using (var scope = serviceScopeFactory.CreateScope())
+            {
+                var analysisService = scope.ServiceProvider.GetRequiredService<IAnalysisService>();
+                try
+                {
+                    var matchOdds = analysisService.GetMatchOdds(fixture);
+                    sender.SendMessage(matchOdds);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Unable to calculate match odds for {0} v {1}: {2}", fixture.HomeTeam, fixture.AwayTeam, ex);
                 }
             }
         }

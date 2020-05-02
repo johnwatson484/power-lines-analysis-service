@@ -36,6 +36,7 @@ namespace PowerLinesAnalysisService
             var messageConfig = Configuration.GetSection("Message").Get<MessageConfig>();
             services.AddSingleton(messageConfig);
             services.AddSingleton<IConsumer, Consumer>();
+            services.AddSingleton<ISender, Sender>();
             services.AddScoped<IAnalysisService, AnalysisService>();         
             services.AddControllers();
         }
