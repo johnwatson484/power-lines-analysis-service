@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using PowerLinesAnalysisService.Data;
 using System.Linq;
+using PowerLinesAnalysisService.Models;
 
 namespace PowerLinesAnalysisService.Controllers
 {
@@ -16,9 +17,13 @@ namespace PowerLinesAnalysisService.Controllers
         {
             this.dbContext = dbContext;
         }
-        public ActionResult<DateTime> LastResultDate()
+
+        [Route("[action]")]
+        public ActionResult<LastResultDate> LastResultDate()
         {
-            return dbContext.Results.Max(x => x.Created);
+            var date = dbContext.Results.OrderByDescending(x => x.Created).FirstOrDefault()?.Created;
+
+            return new LastResultDate(date);
         }
     }
 }
