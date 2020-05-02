@@ -34,7 +34,6 @@ namespace PowerLinesAnalysisService.Messaging
             {
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
-                Console.WriteLine("Received {0}", message);
                 messageAction(message);
             };
             channel.BasicConsume(queue: queue,
