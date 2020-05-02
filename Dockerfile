@@ -21,7 +21,7 @@ COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/ ./PowerLinesAnalysisServ
 COPY --chown=dotnet:dotnet ./scripts/ ./scripts/
 RUN dotnet publish ./PowerLinesAnalysisService/ -c Release -o /home/dotnet/out
 
-ARG PORT=5001
+ARG PORT=5002
 ENV PORT ${PORT}
 ENV ASPNETCORE_ENVIRONMENT=development
 EXPOSE ${PORT}
@@ -38,7 +38,7 @@ USER dotnet
 WORKDIR /home/dotnet
 
 COPY --from=development /home/dotnet/out/ ./
-ARG PORT=5001
+ARG PORT=5002
 ENV ASPNETCORE_URLS http://*:${PORT}
 ENV ASPNETCORE_ENVIRONMENT=production
 EXPOSE ${PORT}
