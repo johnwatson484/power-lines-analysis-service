@@ -4,6 +4,7 @@ using System.Linq;
 using PowerLinesAnalysisService.Data;
 using PowerLinesAnalysisService.Models;
 using PowerLinesAnalysisService.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace PowerLinesAnalysisService.Analysis
 {
@@ -46,7 +47,7 @@ namespace PowerLinesAnalysisService.Analysis
 
         private void SetAnalysisMatches(string division)
         {
-            matches = dbContext.Results.Where(x => x.Division == division && x.Date >= startDate).ToList();
+            matches = dbContext.Results.AsNoTracking().Where(x => x.Division == division && x.Date >= startDate).ToList();
         }
 
         private void CalculateExpectedGoals(Fixture fixture)
