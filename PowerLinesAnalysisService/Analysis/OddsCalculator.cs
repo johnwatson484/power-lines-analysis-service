@@ -19,6 +19,7 @@ namespace PowerLinesAnalysisService.Analysis
         {
             CalculateResultOdds();
             CalculateScoreOdds();
+            CalculateRecommendations();
             return matchOdds;
         }
 
@@ -80,6 +81,44 @@ namespace PowerLinesAnalysisService.Analysis
         private void CalculateExpectedGoalsOdds()
         {
             matchOdds.ExpectedGoals = ConvertProbabilityToOdds(GetExpectedGoalsProbability());
+        }
+
+        private void CalculateRecommendations()
+        {
+            decimal threshold = 0.55M;
+            decimal lowerThreshold = 0.5M;
+            var prediction = CalculatePrediction();
+            var predictionProbability = GetResultProbability(prediction);
+            if (predictionProbability > threshold)
+            {
+                matchOdds.Recommended = prediction;
+            }
+            if (predictionProbability > lowerThreshold)
+            {
+                matchOdds.LowerRecommended = prediction;
+            }
+
+        }
+
+        private char CalculatePrediction()
+        {
+            var homeProbability = GetResultProbability('H');
+            var drawProbability = GetResultProbability('D');
+            var awayProbability = GetResultProbability('A');
+
+            if (homeProbability > drawProbability && homeProbability > awayProbability)
+            {
+                return "H";
+            }
+            if (drawProbability > homeProbability && drawProbability > awayProbability)
+            {
+                return "D";
+            }
+            if (awayProbability > homeProbability && awayProbability > drawProbability)
+            {
+                return "A";
+            }
+            return "X";
         }
     }
 }
