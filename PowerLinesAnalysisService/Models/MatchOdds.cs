@@ -10,15 +10,15 @@ public class MatchOdds
     public int HomeGoals { get; set; }
     public int AwayGoals { get; set; }
     public decimal ExpectedGoals { get; set; }
-    public DateTime Calculated { get; set; }
     public string Recommended { get; set; }
     public string LowerRecommended { get; set; }
+    public DateTime Calculated { get; set; }
 
     public MatchOdds(int fixtureId)
     {
         FixtureId = fixtureId;
-        Calculated = DateTime.UtcNow;
         Recommended = "X";
         LowerRecommended = "X";
+        Calculated = DateTime.UtcNow;
     }
 }
