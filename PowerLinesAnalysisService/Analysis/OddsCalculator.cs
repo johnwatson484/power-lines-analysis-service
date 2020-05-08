@@ -91,11 +91,11 @@ namespace PowerLinesAnalysisService.Analysis
             var predictionProbability = GetResultProbability(prediction);
             if (predictionProbability > threshold)
             {
-                matchOdds.Recommended = prediction;
+                matchOdds.Recommended = Char.ToString(prediction);
             }
             if (predictionProbability > lowerThreshold)
             {
-                matchOdds.LowerRecommended = prediction;
+                matchOdds.LowerRecommended = Char.ToString(prediction);
             }
 
         }
@@ -108,17 +108,17 @@ namespace PowerLinesAnalysisService.Analysis
 
             if (homeProbability > drawProbability && homeProbability > awayProbability)
             {
-                return "H";
+                return 'H';
             }
             if (drawProbability > homeProbability && drawProbability > awayProbability)
             {
-                return "D";
+                return 'D';
             }
             if (awayProbability > homeProbability && awayProbability > drawProbability)
             {
-                return "A";
+                return 'A';
             }
-            return "X";
+            return 'X';
         }
     }
 }
