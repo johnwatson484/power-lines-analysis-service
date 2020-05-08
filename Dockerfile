@@ -21,12 +21,13 @@ COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/ ./PowerLinesAnalysisServ
 COPY --chown=dotnet:dotnet ./scripts/ ./scripts/
 RUN dotnet publish ./PowerLinesAnalysisService/ -c Release -o /home/dotnet/out
 
-ARG PORT=5002
+ARG PORT=500
 ENV PORT ${PORT}
+ENV ASPNETCORE_URLS http://*:5003
 ENV ASPNETCORE_ENVIRONMENT=development
 EXPOSE ${PORT}
 # Override entrypoint using shell form so that environment variables are picked up
-ENTRYPOINT dotnet watch --project ./PowerLinesAnalysisService run --urls "http://*:${PORT}"
+ENTRYPOINT dotnet watch --project ./PowerLinesAnalysisService run
 
 # Production
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine AS production
@@ -38,8 +39,8 @@ USER dotnet
 WORKDIR /home/dotnet
 
 COPY --from=development /home/dotnet/out/ ./
-ARG PORT=5002
-ENV ASPNETCORE_URLS http://*:${PORT}
+ARG PORT=5003
+ENV ASPNETCORE_URLS http://*:5003
 ENV ASPNETCORE_ENVIRONMENT=production
 EXPOSE ${PORT}
 # Override entrypoint using shell form so that environment variables are picked up

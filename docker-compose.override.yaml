@@ -9,10 +9,10 @@ services:
     entrypoint: >
       sh -c "
         scripts/wait-for.sh power-lines-message:5672 --
-        scripts/wait-for.sh power-lines-analysis-service-postgres:6002 --
-        dotnet watch --project ./PowerLinesAnalysisService run --urls "http://*:5002""
+        scripts/wait-for.sh power-lines-analysis-service-postgres:6003 --
+        dotnet watch --project ./PowerLinesAnalysisService run"
     ports:
-      - "5002:5002"
+      - "5003:5003"
     environment:
       ConnectionStrings__PowerLinesAnalysisService: "Server=power-lines-analysis-service-postgres;Port=5432;Database=power_lines_analysis;User Id=postgres;Password=postgres;"
       Message__Host: power-lines-message
@@ -41,7 +41,7 @@ services:
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "6002:5432"
+      - "6003:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
