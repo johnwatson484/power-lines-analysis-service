@@ -1,7 +1,0 @@
-version: '3.7'
-services:
-  power-lines-analysis-service:
-    entrypoint: dotnet watch --project ./PowerLinesAnalysisService.Tests test
-    volumes:
-      - ./PowerLinesAnalysisService.Tests:/home/dotnet/PowerLinesAnalysisService.Tests
-      - ./PowerLinesAnalysisService:/home/dotnet/PowerLinesAnalysisService
