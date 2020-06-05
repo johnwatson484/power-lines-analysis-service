@@ -61,7 +61,7 @@ namespace PowerLinesAnalysisService.Messaging
         private void CreateQueue()
         {
             channel.QueueDeclare(queue: queue,
-                                 durable: false,
+                                 durable: true,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
