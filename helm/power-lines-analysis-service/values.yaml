@@ -1,0 +1,45 @@
+environment: development
+name: power-lines-analysis-service
+image: power-lines-analysis-service
+
+container:
+  imagePullPolicy: IfNotPresent
+  requestMemory: 60Mi
+  requestCpu: 60m
+  limitMemory: 250Mi
+  limitCpu: 250m
+  port: 5003
+  readOnlyRootFilesystem: false
+  allowPrivilegeEscalation: false
+  comPlusEnableDiagnostics: 0
+  connectionString: "User Id=postgres;Password=postgres;Server=power-lines-analysis-service-postgres;Port=5432;Database=Database=power_lines_analysis;"
+
+postgresService:
+  postgresHost: power-lines-analysis-service-postgres
+  postgresExternalName: host.docker.internal
+  postgresPort: 5432
+
+message:
+  host: host.docker.internal
+  port: 5672
+  analysisQueue: power-lines-analysis
+  analysisUsername: rabbitmq
+  analysisPassword: rabbitmq
+  resultQueue: power-lines-results
+  resultUsername: rabbitmq
+  resultPassword: rabbitmq
+  oddsQueue: power-lines-odds
+  oddsUsername: rabbitmq
+  oddsPassword: rabbitmq
+
+deployment:
+  restartPolicy: Always
+  replicas: 1
+  minReadySeconds: 5
+  redeployOnChange: update this field to force a change
+  imagePullSecret:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  port: 80

@@ -1,0 +1,8 @@
+{{- include "helm-library.deployment" (list . "power-lines-analysis-service.deployment") -}}
+{{- define "power-lines-analysis-service.deployment" -}}
+spec:
+  template:
+    spec:
+      containers:
+      - {{ include "helm-library.container" (list . "power-lines-analysis-service.container") }}
+{{- end -}}
