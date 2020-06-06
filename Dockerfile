@@ -17,6 +17,7 @@ RUN dotnet restore ./PowerLinesAnalysisService.Tests/PowerLinesAnalysisService.T
 COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/*.csproj ./PowerLinesAnalysisService/
 RUN dotnet restore ./PowerLinesAnalysisService/PowerLinesAnalysisService.csproj
 COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService.Tests/ ./PowerLinesAnalysisService.Tests/
+RUN true
 COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/ ./PowerLinesAnalysisService/
 RUN true
 COPY --chown=dotnet:dotnet ./scripts/ ./scripts/
