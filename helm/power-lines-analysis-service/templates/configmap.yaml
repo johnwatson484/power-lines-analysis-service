@@ -1,7 +1,7 @@
 {{- include "helm-library.configmap" (list . "power-lines-analysis-service.configmap") -}}
 {{- define "power-lines-analysis-service.configmap" -}}
 data:
-  ConnectionStrings__SugarFreeHealthyDiet: {{ quote .Values.container.connectionString }}
+  ConnectionStrings__PowerLinesAnalysisService: {{ quote .Values.container.connectionString }}
   Message__Host: {{ quote .Values.message.host }}
   Message__Port: {{ quote .Values.message.port }}
   Message__AnalysisQueue: {{ quote .Values.message.analysisQueue }}
