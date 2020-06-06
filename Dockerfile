@@ -18,6 +18,7 @@ COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/*.csproj ./PowerLinesAnal
 RUN dotnet restore ./PowerLinesAnalysisService/PowerLinesAnalysisService.csproj
 COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService.Tests/ ./PowerLinesAnalysisService.Tests/
 COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/ ./PowerLinesAnalysisService/
+RUN true
 COPY --chown=dotnet:dotnet ./scripts/ ./scripts/
 RUN dotnet publish ./PowerLinesAnalysisService/ -c Release -o /home/dotnet/out
 
