@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PowerLinesAnalysisService.Data;
 using System.Linq;
 using PowerLinesAnalysisService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PowerLinesAnalysisService.Controllers
 {
@@ -21,7 +22,7 @@ namespace PowerLinesAnalysisService.Controllers
         [Route("[action]")]
         public ActionResult<LastResultDate> LastResultDate()
         {
-            var date = dbContext.Results.OrderByDescending(x => x.Created).FirstOrDefault()?.Created;
+            var date = dbContext.Results.AsNoTracking().OrderByDescending(x => x.Created).FirstOrDefault()?.Created;
 
             return new LastResultDate(date);
         }
