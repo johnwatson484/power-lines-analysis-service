@@ -11,6 +11,7 @@ namespace PowerLinesAnalysisService.Analysis
     public class AnalysisService : IAnalysisService
     {
         ApplicationDbContext dbContext;
+        Threshold threshold;
         const int yearsToAnalyse = 6;
         const int maxGoalsPerGame = 5;
         DateTime startDate;
@@ -21,9 +22,10 @@ namespace PowerLinesAnalysisService.Analysis
         Poisson poisson;
         OddsCalculator oddsService;
 
-        public AnalysisService(ApplicationDbContext dbContext)
+        public AnalysisService(ApplicationDbContext dbContext, Threshold threshold)
         {
             this.dbContext = dbContext;
+            this.threshold = threshold;
             goalDistribution = new GoalDistribution();
             poisson = new Poisson();
         }
@@ -36,7 +38,7 @@ namespace PowerLinesAnalysisService.Analysis
             CalculateExpectedGoals(fixture);
             CalculateGoalDistribution();
 
-            oddsService = new OddsCalculator(fixture.FixtureId, goalDistribution);
+            oddsService = new OddsCalculator(fixture.FixtureId, goalDistribution, threshold);
             return oddsService.GetMatchOdds();
         }
 

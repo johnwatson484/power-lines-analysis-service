@@ -7,11 +7,13 @@ namespace PowerLinesAnalysisService.Analysis
     public class OddsCalculator
     {
         GoalDistribution goalDistribution;
+        Threshold threshold;
         MatchOdds matchOdds;
 
-        public OddsCalculator(int fixtureId, GoalDistribution goalDistribution)
+        public OddsCalculator(int fixtureId, GoalDistribution goalDistribution, Threshold threshold)
         {
             this.goalDistribution = goalDistribution;
+            this.threshold = threshold;
             matchOdds = new MatchOdds(fixtureId);
         }
 
@@ -85,19 +87,16 @@ namespace PowerLinesAnalysisService.Analysis
 
         private void CalculateRecommendations()
         {
-            decimal threshold = 0.55M;
-            decimal lowerThreshold = 0.5M;
             var prediction = CalculatePrediction();
             var predictionProbability = GetResultProbability(prediction);
-            if (predictionProbability > threshold)
+            if (predictionProbability > threshold.Higher)
             {
                 matchOdds.Recommended = Char.ToString(prediction);
             }
-            if (predictionProbability > lowerThreshold)
+            if (predictionProbability > threshold.Lower)
             {
                 matchOdds.LowerRecommended = Char.ToString(prediction);
             }
-
         }
 
         private char CalculatePrediction()
