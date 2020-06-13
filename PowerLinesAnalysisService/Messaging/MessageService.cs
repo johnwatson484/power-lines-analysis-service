@@ -73,18 +73,18 @@ namespace PowerLinesAnalysisService.Messaging
 
         private void ReceiveAnalysisMessage(string message)
         {
-            var fixture = JsonConvert.DeserializeObject<Fixture>(message);
+            var analysisMessage = JsonConvert.DeserializeObject<AnalysisMessage>(message);
             using (var scope = serviceScopeFactory.CreateScope())
             {
                 var analysisService = scope.ServiceProvider.GetRequiredService<IAnalysisService>();
                 try
                 {
-                    var matchOdds = analysisService.GetMatchOdds(fixture);
-                    sender.SendMessage(matchOdds);
+                    var matchOdds = analysisService.GetMatchOdds(analysisMessage.Fixture);
+                    sender.SendMessage(matchOdds, analysisMessage.Sender);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Unable to calculate match odds for {0} v {1}: {2}", fixture.HomeTeam, fixture.AwayTeam, ex);
+                    Console.WriteLine("Unable to calculate match odds for {0} v {1}: {2}", analysisMessage.Fixture.HomeTeam, analysisMessage.Fixture.AwayTeam, ex);
                 }
             }
         }

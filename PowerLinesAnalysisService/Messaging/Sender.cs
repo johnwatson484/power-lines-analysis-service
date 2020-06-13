@@ -18,7 +18,7 @@ namespace PowerLinesAnalysisService.Messaging
             CreateConnectionFactory(brokerUrl);
             CreateConnection();
             CreateChannel();
-            CreateQueue();
+            CreateExchange();
         }
 
         public void CloseConnection()
@@ -26,13 +26,13 @@ namespace PowerLinesAnalysisService.Messaging
             connection.Close();
         }
 
-        public void SendMessage(object obj)
+        public void SendMessage(object obj, string routingKey)
         {
             var message = JsonConvert.SerializeObject(obj);            
             var body = Encoding.UTF8.GetBytes(message);
 
-            channel.BasicPublish(exchange: "",
-                                 routingKey: queue,
+            channel.BasicPublish(exchange: queue,
+                                 routingKey: routingKey,
                                  basicProperties: null,
                                  body: body);
         }
@@ -54,13 +54,9 @@ namespace PowerLinesAnalysisService.Messaging
             channel = connection.CreateModel();
         }
 
-        private void CreateQueue()
+        private void CreateExchange()
         {
-            channel.QueueDeclare(queue: queue,
-                                 durable: true,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+            channel.ExchangeDeclare(queue, ExchangeType.Direct, true, false);
         }
     }
 }
