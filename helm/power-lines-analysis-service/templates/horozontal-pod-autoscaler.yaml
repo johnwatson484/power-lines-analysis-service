@@ -13,5 +13,5 @@ spec:
       name: memory
       target:
         type: Utilization
-        averageValue: {{ .Values.deployment.memoryThreshold }}
+        averageUtilization: {{ .Values.deployment.memoryThreshold }}
 {{- end -}}
