@@ -38,7 +38,7 @@ deployment:
   minReplicas: 1
   maxReplicas: 5
   cpuThreshold: 50
-  memoryThreshold: 60Mi
+  memoryThreshold: 80
   minReadySeconds: 5
   redeployOnChange: update this field to force a change
   imagePullSecret:
