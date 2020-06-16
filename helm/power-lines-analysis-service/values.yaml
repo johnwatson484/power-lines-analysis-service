@@ -33,7 +33,7 @@ message:
   oddsPassword: rabbitmq
 
 deployment:
-  restartPolicy: Always
+  restartPolicy: OnFailure
   replicas: 1
   minReplicas: 1
   maxReplicas: 5
