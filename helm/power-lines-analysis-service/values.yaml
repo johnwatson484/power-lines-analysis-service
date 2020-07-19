@@ -5,9 +5,9 @@ image: power-lines-analysis-service
 container:
   imagePullPolicy: IfNotPresent
   requestMemory: 100Mi
-  requestCpu: 60m
+  requestCpu: 100m
   limitMemory: 100Mi
-  limitCpu: 60m
+  limitCpu: 100m
   port: 5003
   readOnlyRootFilesystem: false
   allowPrivilegeEscalation: false
