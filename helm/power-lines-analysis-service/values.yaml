@@ -33,11 +33,10 @@ message:
   oddsPassword: rabbitmq
 
 deployment:
-  restartPolicy: OnFailure
   replicas: 1
   minReplicas: 1
   maxReplicas: 5
-  cpuThreshold: 50
+  cpuThreshold: 80
   memoryThreshold: 80
   minReadySeconds: 5
   redeployOnChange: update this field to force a change
