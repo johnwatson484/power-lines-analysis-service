@@ -4,7 +4,7 @@ image: power-lines-analysis-service
 
 container:
   imagePullPolicy: IfNotPresent
-  requestMemory: 80Mi
+  requestMemory: 100Mi
   requestCpu: 60m
   limitMemory: 100Mi
   limitCpu: 60m
