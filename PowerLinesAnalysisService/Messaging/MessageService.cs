@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using PowerLinesAnalysisService.Analysis;
+using PowerLinesMessaging;
 
 namespace PowerLinesAnalysisService.Messaging
 {
@@ -43,7 +44,7 @@ namespace PowerLinesAnalysisService.Messaging
 
         public void CreateConnectionToQueue()
         {
-            sender.CreateConnectionToQueue(new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.OddsUsername, messageConfig.OddsPassword).ToString(),
+            sender.CreateConnectionToQueue(QueueType.Exchange, new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.OddsUsername, messageConfig.OddsPassword).ToString(),
                 messageConfig.OddsQueue);
 
             resultsConsumer.CreateConnectionToQueue(QueueType.Exchange, new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.ResultUsername, messageConfig.ResultPassword).ToString(),
