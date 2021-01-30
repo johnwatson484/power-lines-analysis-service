@@ -44,14 +44,45 @@ namespace PowerLinesAnalysisService.Messaging
 
         public void CreateConnectionToQueue()
         {
-            sender.CreateConnectionToQueue(QueueType.ExchangeDirect, new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.OddsUsername, messageConfig.OddsPassword).ToString(),
-                messageConfig.OddsQueue);
+            var oddsOptions = new SenderOptions
+            {
+                Host = messageConfig.Host,
+                Port = messageConfig.Port,
+                Username = messageConfig.OddsUsername,
+                Password = messageConfig.OddsPassword,
+                QueueName = messageConfig.OddsQueue,
+                QueueType = QueueType.ExchangeDirect
+            };
 
-            resultsConsumer.CreateConnectionToQueue(QueueType.ExchangeFanout, new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.ResultUsername, messageConfig.ResultPassword).ToString(),
-                messageConfig.ResultQueue);
+            sender.CreateConnectionToQueue(oddsOptions);
 
-            analysisConsumer.CreateConnectionToQueue(QueueType.Worker, new BrokerUrl(messageConfig.Host, messageConfig.Port, messageConfig.AnalysisUsername, messageConfig.AnalysisPassword).ToString(),
-                messageConfig.AnalysisQueue);
+            var resultOptions = new ConsumerOptions
+            {
+                Host = messageConfig.Host,
+                Port = messageConfig.Port,
+                Username = messageConfig.ResultUsername,
+                Password = messageConfig.ResultPassword,
+                QueueName = messageConfig.ResultQueue,
+                SubscriptionQueueName = "power-lines-results-analysis",
+                QueueType = QueueType.ExchangeFanout,
+            
+            };
+
+            resultsConsumer.CreateConnectionToQueue(resultOptions);
+
+            var analysisOptions = new ConsumerOptions
+            {
+                Host = messageConfig.Host,
+                Port = messageConfig.Port,
+                Username = messageConfig.AnalysisUsername,
+                Password = messageConfig.AnalysisPassword,
+                QueueName = messageConfig.AnalysisQueue,
+                SubscriptionQueueName = "power-lines-analysis-analysis",
+                QueueType = QueueType.ExchangeFanout,
+            
+            };
+
+            analysisConsumer.CreateConnectionToQueue(analysisOptions);
         }
 
         private void ReceiveResultMessage(string message)
