@@ -12,77 +12,92 @@ using PowerLinesMessaging;
 
 namespace PowerLinesAnalysisService.Messaging
 {
-    public class MessageService : BackgroundService, IMessageService
+    public class MessageService : BackgroundService
     {
-        private IConsumer resultsConsumer;
-        private IConsumer analysisConsumer;
         private MessageConfig messageConfig;
         private IServiceScopeFactory serviceScopeFactory;
+        private IConnection connection;
+        private IConsumer analysisConsumer;
+        private IConsumer resultConsumer;
         private ISender sender;
 
-        public MessageService(IConsumer resultsConsumer, IConsumer analysisConsumer, ISender sender, MessageConfig messageConfig, IServiceScopeFactory serviceScopeFactory)
+        public MessageService(MessageConfig messageConfig, IServiceScopeFactory serviceScopeFactory)
         {
-            this.resultsConsumer = resultsConsumer;
-            this.analysisConsumer = analysisConsumer;
             this.messageConfig = messageConfig;
             this.serviceScopeFactory = serviceScopeFactory;
-            this.sender = sender;
+        }
+
+        public override Task StartAsync(CancellationToken stoppingToken)
+        {
+            CreateConnection();
+            CreateOddsSender();
+            CreateResultConsumer();
+            CreateAnalysisConsumer();
+
+            return base.StartAsync(stoppingToken);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        {            
-            Listen();
+        {
+            resultConsumer.Listen(new Action<string>(ReceiveResultMessage));
+            analysisConsumer.Listen(new Action<string>(ReceiveAnalysisMessage));
             return Task.CompletedTask;
         }
 
-        public void Listen()
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            CreateConnectionToQueue();
-            resultsConsumer.Listen(new Action<string>(ReceiveResultMessage));
-            analysisConsumer.Listen(new Action<string>(ReceiveAnalysisMessage));
+            await base.StopAsync(cancellationToken);
+            connection.CloseConnection();
         }
 
-        public void CreateConnectionToQueue()
+        protected void CreateConnection()
         {
-            var oddsOptions = new SenderOptions
+            var options = new ConnectionOptions
             {
                 Host = messageConfig.Host,
                 Port = messageConfig.Port,
-                Username = messageConfig.OddsUsername,
-                Password = messageConfig.OddsPassword,
+                Username = messageConfig.Username,
+                Password = messageConfig.Password
+            };
+            connection = new Connection(options);
+        }
+
+        protected void CreateResultConsumer()
+        {
+            var options = new ConsumerOptions
+            {
+                Name = messageConfig.ResultQueue,
+                QueueName = messageConfig.ResultQueue,
+                SubscriptionQueueName = messageConfig.ResultSubscription,
+                QueueType = QueueType.ExchangeFanout
+            };
+
+            resultConsumer = connection.CreateConsumerChannel(options);
+        }
+
+        protected void CreateAnalysisConsumer()
+        {
+            var options = new ConsumerOptions
+            {
+                Name = messageConfig.AnalysisQueue,
+                QueueName = messageConfig.AnalysisQueue,
+                SubscriptionQueueName = messageConfig.AnalysisQueue,
+                QueueType = QueueType.ExchangeFanout
+            };
+
+            analysisConsumer = connection.CreateConsumerChannel(options);
+        }
+
+        public void CreateOddsSender()
+        {
+            var options = new SenderOptions
+            {
+                Name = messageConfig.OddsQueue,
                 QueueName = messageConfig.OddsQueue,
                 QueueType = QueueType.ExchangeDirect
             };
 
-            sender.CreateConnectionToQueue(oddsOptions);
-
-            var resultOptions = new ConsumerOptions
-            {
-                Host = messageConfig.Host,
-                Port = messageConfig.Port,
-                Username = messageConfig.ResultUsername,
-                Password = messageConfig.ResultPassword,
-                QueueName = messageConfig.ResultQueue,
-                SubscriptionQueueName = "power-lines-results-analysis",
-                QueueType = QueueType.ExchangeFanout,
-            
-            };
-
-            resultsConsumer.CreateConnectionToQueue(resultOptions);
-
-            var analysisOptions = new ConsumerOptions
-            {
-                Host = messageConfig.Host,
-                Port = messageConfig.Port,
-                Username = messageConfig.AnalysisUsername,
-                Password = messageConfig.AnalysisPassword,
-                QueueName = messageConfig.AnalysisQueue,
-                SubscriptionQueueName = "power-lines-analysis-analysis",
-                QueueType = QueueType.ExchangeFanout,
-            
-            };
-
-            analysisConsumer.CreateConnectionToQueue(analysisOptions);
+            sender = connection.CreateSenderChannel(options);
         }
 
         private void ReceiveResultMessage(string message)

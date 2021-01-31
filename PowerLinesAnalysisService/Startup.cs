@@ -8,7 +8,6 @@ using PowerLinesAnalysisService.Data;
 using PowerLinesAnalysisService.Messaging;
 using Microsoft.EntityFrameworkCore;
 using PowerLinesAnalysisService.Analysis;
-using PowerLinesMessaging;
 
 namespace PowerLinesAnalysisService
 {
@@ -32,9 +31,6 @@ namespace PowerLinesAnalysisService
             services.AddSingleton(messageConfig);
             var threshold = Configuration.GetSection("Threshold").Get<Threshold>();
             services.AddSingleton(threshold);
-            
-            services.AddTransient<IConsumer, Consumer>();
-            services.AddSingleton<ISender, Sender>();
             services.AddScoped<IAnalysisService, AnalysisService>();         
             services.AddControllers();
         }
