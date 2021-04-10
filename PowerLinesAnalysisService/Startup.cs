@@ -8,6 +8,7 @@ using PowerLinesAnalysisService.Data;
 using PowerLinesAnalysisService.Messaging;
 using Microsoft.EntityFrameworkCore;
 using PowerLinesAnalysisService.Analysis;
+using System;
 
 namespace PowerLinesAnalysisService
 {
@@ -24,14 +25,15 @@ namespace PowerLinesAnalysisService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(
-                    Configuration.GetConnectionString("PowerLinesAnalysisService")));
+                options.UseNpgsql(Configuration.GetConnectionString("PowerLinesAnalysisService"), options =>
+                    options.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null))
+                );
 
             var messageConfig = Configuration.GetSection("Message").Get<MessageConfig>();
             services.AddSingleton(messageConfig);
             var threshold = Configuration.GetSection("Threshold").Get<Threshold>();
             services.AddSingleton(threshold);
-            services.AddScoped<IAnalysisService, AnalysisService>();         
+            services.AddScoped<IAnalysisService, AnalysisService>();
             services.AddControllers();
         }
 
