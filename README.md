@@ -1,5 +1,5 @@
 [![Build Status](https://johnwatson484.visualstudio.com/John%20D%20Watson/_apis/build/status/Power%20Llines%20Analysis%20Service?branchName=master)](https://johnwatson484.visualstudio.com/John%20D%20Watson/_build/latest?definitionId=34&branchName=master)
-
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=johnwatson484_power-lines-analysis-service&metric=alert_status)](https://sonarcloud.io/dashboard?id=johnwatson484_power-lines-analysis-service)
 # Power Lines Analysis Service
 Results repository and data analysis service
 
