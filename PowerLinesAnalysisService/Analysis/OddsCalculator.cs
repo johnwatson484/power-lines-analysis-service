@@ -1,4 +1,5 @@
 using PowerLinesAnalysisService.Extensions;
+using PowerLinesAnalysisService.Models;
 using System;
 using System.Linq;
 
@@ -6,9 +7,9 @@ namespace PowerLinesAnalysisService.Analysis
 {
     public class OddsCalculator
     {
-        GoalDistribution goalDistribution;
-        Threshold threshold;
-        MatchOdds matchOdds;
+        readonly GoalDistribution goalDistribution;
+        readonly Threshold threshold;
+        readonly MatchOdds matchOdds;
 
         public OddsCalculator(int fixtureId, GoalDistribution goalDistribution, Threshold threshold)
         {
@@ -76,8 +77,8 @@ namespace PowerLinesAnalysisService.Analysis
 
         private decimal GetExpectedGoalsProbability()
         {
-            return goalDistribution.ScoreProbabilities.Where(x => x.HomeGoalProbability.Goals == matchOdds.HomeGoals
-                && x.AwayGoalProbability.Goals == matchOdds.AwayGoals).First().Probability;
+            return goalDistribution.ScoreProbabilities.First(x => x.HomeGoalProbability.Goals == matchOdds.HomeGoals
+                && x.AwayGoalProbability.Goals == matchOdds.AwayGoals).Probability;
         }
 
         private void CalculateExpectedGoalsOdds()

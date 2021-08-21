@@ -14,8 +14,8 @@ namespace PowerLinesAnalysisService.Messaging
 {
     public class MessageService : BackgroundService
     {
-        private MessageConfig messageConfig;
-        private IServiceScopeFactory serviceScopeFactory;
+        private readonly MessageConfig messageConfig;
+        private readonly IServiceScopeFactory serviceScopeFactory;
         private IConnection connection;
         private IConsumer analysisConsumer;
         private IConsumer resultConsumer;
@@ -37,7 +37,7 @@ namespace PowerLinesAnalysisService.Messaging
             return base.StartAsync(stoppingToken);
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             resultConsumer.Listen(new Action<string>(ReceiveResultMessage));
             analysisConsumer.Listen(new Action<string>(ReceiveAnalysisMessage));

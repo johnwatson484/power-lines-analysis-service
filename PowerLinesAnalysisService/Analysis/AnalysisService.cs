@@ -10,17 +10,16 @@ namespace PowerLinesAnalysisService.Analysis
 {
     public class AnalysisService : IAnalysisService
     {
-        ApplicationDbContext dbContext;
-        Threshold threshold;
+        readonly ApplicationDbContext dbContext;
+        readonly Threshold threshold;
         const int yearsToAnalyse = 6;
         const int maxGoalsPerGame = 5;
         DateTime startDate;
         List<Result> matches;
         decimal homeExpectedGoals;
         decimal awayExpectedGoals;
-        GoalDistribution goalDistribution;
-        Poisson poisson;
-        OddsCalculator oddsService;
+        readonly GoalDistribution goalDistribution;
+        readonly Poisson poisson;        
 
         public AnalysisService(ApplicationDbContext dbContext, Threshold threshold)
         {
@@ -38,13 +37,13 @@ namespace PowerLinesAnalysisService.Analysis
             CalculateExpectedGoals(fixture);
             CalculateGoalDistribution();
 
-            oddsService = new OddsCalculator(fixture.FixtureId, goalDistribution, threshold);
+            var oddsService = new OddsCalculator(fixture.FixtureId, goalDistribution, threshold);
             return oddsService.GetMatchOdds();
         }
 
         private void SetStartDate(DateTime fixtureDate)
         {
-            startDate = fixtureDate.AddYears(-6).Date;
+            startDate = fixtureDate.AddYears(-yearsToAnalyse).Date;
         }
 
         private void SetAnalysisMatches(string division)
