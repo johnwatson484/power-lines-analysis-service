@@ -36,6 +36,7 @@ deployment:
   maxReplicas: 5
   cpuThreshold: 80
   memoryThreshold: 80
+  triggerQueueLength: 10
   minReadySeconds: 5
   redeployOnChange: update this field to force a change
   imagePullSecret:
