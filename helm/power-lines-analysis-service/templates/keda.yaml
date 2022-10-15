@@ -11,9 +11,9 @@ spec:
       host: amqp://{{ .Values.message.username }}:{{ .Values.message.password }}@{{ .Values.message.host }}:{{ .Values.message.port }}/
       queueName: {{ .Values.message.resultSubscription }}
       mode: QueueLength
-      value: {{ .Values.deployment.triggerQueueLength }}
-      minReplicaCount: {{ .Values.deployment.minReplicas }}
-      maxReplicaCount: {{ .Values.deployment.maxReplicas }}
+      value: {{ .Values.deployment.triggerQueueLength | quote }}
+      minReplicaCount: {{ .Values.deployment.minReplicas | quote }}
+      maxReplicaCount: {{ .Values.deployment.maxReplicas | quote }}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -28,6 +28,6 @@ spec:
       host: amqp://{{ .Values.message.username }}:{{ .Values.message.password }}@{{ .Values.message.host }}:{{ .Values.message.port }}/
       queueName: {{ .Values.message.analysisSubscription }}
       mode: QueueLength
-      value: {{ .Values.deployment.triggerQueueLength }}
-      minReplicaCount: {{ .Values.deployment.minReplicas }}
-      maxReplicaCount: {{ .Values.deployment.maxReplicas }}
+      value: {{ .Values.deployment.triggerQueueLength | quote }}
+      minReplicaCount: {{ .Values.deployment.minReplicas | quote }}
+      maxReplicaCount: {{ .Values.deployment.maxReplicas | quote }}
