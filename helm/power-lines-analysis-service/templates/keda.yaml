@@ -1,7 +1,7 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: {{ .Values.name | quote }}-results
+  name: {{ .Values.name }}-results
 spec:
   scaleTargetRef:
     name: rabbitmq-deployment
@@ -18,7 +18,7 @@ spec:
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: {{ .Values.name | quote }}-analysis
+  name: {{ .Values.name }}-analysis
 spec:
   scaleTargetRef:
     name: rabbitmq-deployment
