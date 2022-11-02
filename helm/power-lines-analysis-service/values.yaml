@@ -1,23 +1,15 @@
-environment: development
+environment: production
 name: power-lines-analysis-service
 image: power-lines-analysis-service
 
 container:
-  imagePullPolicy: IfNotPresent
   requestMemory: 200Mi
   requestCpu: 120m
   limitMemory: 300Mi
   limitCpu: 120m
   port: 5003
-  readOnlyRootFilesystem: false
-  allowPrivilegeEscalation: false
   comPlusEnableDiagnostics: 0
   connectionString: "User Id=postgres;Password=postgres;Server=power-lines-analysis-service-postgres;Port=5432;Database=Database=power_lines_analysis;"
-
-postgresService:
-  postgresHost: power-lines-analysis-service-postgres
-  postgresExternalName: host.docker.internal
-  postgresPort: 5432
 
 message:
   host: host.docker.internal
@@ -31,17 +23,8 @@ message:
   oddsQueue: power-lines-odds
 
 deployment:
-  replicas: 1
   minReplicas: 1
   maxReplicas: 5
   cpuThreshold: 80
   memoryThreshold: 80
   triggerQueueLength: 10
-  minReadySeconds: 5
-  redeployOnChange: update this field to force a change
-  imagePullSecret:
-  runAsNonRoot: true
-  runAsUser: 1000
-
-service:
-  port: 80
