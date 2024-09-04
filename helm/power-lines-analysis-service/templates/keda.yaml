@@ -4,11 +4,11 @@ metadata:
   name: {{ .Values.name }}-results
 spec:
   scaleTargetRef:
-    name: rabbitmq-deployment
+    name: {{ .Values.name }}
   triggers:
   - type: rabbitmq
     metadata:
-      host: amqp://{{ .Values.message.username }}:{{ .Values.message.password }}@{{ .Values.message.host }}:{{ .Values.message.port }}/
+      host: MESSAGE_HOST
       queueName: {{ .Values.message.resultSubscription }}
       mode: QueueLength
       value: {{ .Values.deployment.triggerQueueLength | quote }}
@@ -21,11 +21,11 @@ metadata:
   name: {{ .Values.name }}-analysis
 spec:
   scaleTargetRef:
-    name: rabbitmq-deployment
+    name: {{ .Values.name }}
   triggers:
   - type: rabbitmq
     metadata:
-      host: amqp://{{ .Values.message.username }}:{{ .Values.message.password }}@{{ .Values.message.host }}:{{ .Values.message.port }}/
+      host: MESSAGE_HOST
       queueName: {{ .Values.message.analysisSubscription }}
       mode: QueueLength
       value: {{ .Values.deployment.triggerQueueLength | quote }}
