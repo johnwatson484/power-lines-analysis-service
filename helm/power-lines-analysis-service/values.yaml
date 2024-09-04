@@ -9,13 +9,10 @@ container:
   limitCpu: 120m
   port: 5003
   comPlusEnableDiagnostics: 0
-  connectionString: "User Id=postgres;Password=postgres;Server=power-lines-analysis-service-postgres;Port=5432;Database=Database=power_lines_analysis;"
 
 message:
-  host: host.docker.internal
+  host: services.lynxmagnus.com
   port: 5672
-  username: rabbitmq
-  password: rabbitmq
   analysisQueue: power-lines-analysis
   resultQueue: power-lines-results
   resultSubscription: power-lines-results-analysis
@@ -28,3 +25,6 @@ deployment:
   cpuThreshold: 80
   memoryThreshold: 80
   triggerQueueLength: 10
+
+secret:
+  secretsPath: /power-lines-analysis-service
