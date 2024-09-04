@@ -14,15 +14,6 @@ spec:
       value: {{ .Values.deployment.triggerQueueLength | quote }}
       minReplicaCount: {{ .Values.deployment.minReplicas | quote }}
       maxReplicaCount: {{ .Values.deployment.maxReplicas | quote }}
----
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: {{ .Values.name }}-analysis
-spec:
-  scaleTargetRef:
-    name: {{ .Values.name }}
-  triggers:
   - type: rabbitmq
     metadata:
       host: MESSAGE_HOST
