@@ -1,10 +1,10 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: {{ .Values.name }}-results
+  name: {{ .Values.name }}
 spec:
   scaleTargetRef:
-    deploymentName: {{ .Values.name }}
+    name: {{ .Values.name }}
   triggers:
   - type: rabbitmq
     metadata:
