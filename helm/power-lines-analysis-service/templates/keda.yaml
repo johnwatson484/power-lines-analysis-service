@@ -8,7 +8,7 @@ spec:
   triggers:
   - type: rabbitmq
     metadata:
-      host: MESSAGE_HOST
+      hostFromEnv: MESSAGE_HOST
       queueName: {{ .Values.message.resultSubscription }}
       mode: QueueLength
       value: {{ .Values.deployment.triggerQueueLength | quote }}
@@ -16,7 +16,7 @@ spec:
       maxReplicaCount: {{ .Values.deployment.maxReplicas | quote }}
   - type: rabbitmq
     metadata:
-      host: MESSAGE_HOST
+      hostFromEnv: MESSAGE_HOST
       queueName: {{ .Values.message.analysisSubscription }}
       mode: QueueLength
       value: {{ .Values.deployment.triggerQueueLength | quote }}
