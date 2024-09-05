@@ -13,10 +13,10 @@ spec:
       hostFromEnv: MESSAGE_HOST_STRING
       queueName: {{ .Values.message.resultSubscription }}
       mode: QueueLength
-      value: {{ .Values.deployment.triggerQueueLength }}
+      value: {{ .Values.deployment.triggerQueueLength | quote }}
   - type: rabbitmq
     metadata:
       hostFromEnv: MESSAGE_HOST_STRING
       queueName: {{ .Values.message.analysisSubscription }}
       mode: QueueLength
-      value: {{ .Values.deployment.triggerQueueLength }}
+      value: {{ .Values.deployment.triggerQueueLength | quote }}
