@@ -3,11 +3,11 @@
 data:
   Message__Host: {{ quote .Values.message.host }}
   Message__Port: {{ quote .Values.message.port }}
-  Message__AnalysisQueue: {{ quote .Values.message.analysisQueue }}
   Message__ResultQueue: {{ quote .Values.message.resultQueue }}
   Message__ResultSubscription: {{ quote .Values.message.resultSubscription }}
-  Message__OddsQueue: {{ quote .Values.message.oddsQueue }}
+  Message__AnalysisQueue: {{ quote .Values.message.analysisQueue }}
   Message__AnalysisSubscription: {{ quote .Values.message.analysisSubscription }}
+  Message__OddsQueue: {{ quote .Values.message.oddsQueue }}
   COMPlus_EnableDiagnostics: {{ quote .Values.container.comPlusEnableDiagnostics }}
   ASPNETCORE_ENVIRONMENT: {{ quote .Values.environment }}
 {{- end -}}

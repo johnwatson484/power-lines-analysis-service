@@ -81,7 +81,7 @@ namespace PowerLinesAnalysisService.Messaging
             {
                 Name = messageConfig.AnalysisQueue,
                 QueueName = messageConfig.AnalysisQueue,
-                SubscriptionQueueName = messageConfig.AnalysisQueue,
+                SubscriptionQueueName = messageConfig.AnalysisSubscription,
                 QueueType = QueueType.ExchangeFanout
             };
 

@@ -12,6 +12,7 @@ namespace PowerLinesAnalysisService.Messaging
         public string ResultQueue { get; set; }
         public string ResultSubscription { get; set; }
         public string AnalysisQueue { get; set; }
+        public string AnalysisSubscription { get; set; }
         public string OddsQueue { get; set; }
         public string OddsSubscription { get; set; }
     }
