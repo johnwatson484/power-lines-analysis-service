@@ -3,10 +3,7 @@ name: power-lines-analysis-service
 image: power-lines-analysis-service
 
 container:
-  requestMemory: 200Mi
-  requestCpu: 120m
-  limitMemory: 300Mi
-  limitCpu: 120m
+  resourceTier: L
   port: 5003
   comPlusEnableDiagnostics: 0
 
