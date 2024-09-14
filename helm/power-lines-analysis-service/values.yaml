@@ -3,7 +3,7 @@ name: power-lines-analysis-service
 
 container:
   image: power-lines-analysis-service
-  resourceTier: L
+  resourceTier: XL
   port: 5003
   comPlusEnableDiagnostics: 0
 
