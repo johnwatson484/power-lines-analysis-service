@@ -1,8 +1,8 @@
 environment: production
 name: power-lines-analysis-service
-image: power-lines-analysis-service
 
 container:
+  image: power-lines-analysis-service
   resourceTier: L
   port: 5003
   comPlusEnableDiagnostics: 0
