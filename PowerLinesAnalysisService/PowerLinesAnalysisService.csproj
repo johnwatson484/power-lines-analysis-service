@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>4.1.23</Version>
+    <Version>4.1.24</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,4 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.1" />
     <PackageReference Include="PowerLinesMessaging" Version="3.0.2" />
   </ItemGroup>
-
-
 </Project>
