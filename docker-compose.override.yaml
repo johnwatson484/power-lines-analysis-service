@@ -19,6 +19,8 @@ services:
       - ./PowerLinesAnalysisService:/home/dotnet/PowerLinesAnalysisService
       - ./PowerLinesAnalysisService.Tests:/home/dotnet/PowerLinesAnalysisService.Tests
       - ./scripts:/home/dotnet/scripts
+    networks:
+      - power-lines
 
   power-lines-message:
     image: rabbitmq:3-management-alpine
@@ -32,6 +34,8 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    networks:
+      - power-lines
 
   power-lines-analysis-service-postgres:
     image: postgres:11.4-alpine
@@ -43,6 +47,8 @@ services:
       - "6003:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - power-lines
 
 volumes:
   postgres_data: {}
