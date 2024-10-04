@@ -1,32 +1,29 @@
-using System.Collections.Generic;
+namespace PowerLinesAnalysisService.Analysis;
 
-namespace PowerLinesAnalysisService.Analysis
+public class GoalDistribution
 {
-    public class GoalDistribution
+    public List<GoalProbability> HomeGoalProbabilities { get; private set; }
+
+    public List<GoalProbability> AwayGoalProbabilities { get; private set; }
+
+    public List<ScoreProbability> ScoreProbabilities { get; private set; }
+
+    public GoalDistribution()
     {
-        public List<GoalProbability> HomeGoalProbabilities { get; private set; }
+        HomeGoalProbabilities = new List<GoalProbability>();
+        AwayGoalProbabilities = new List<GoalProbability>();
+        ScoreProbabilities = new List<ScoreProbability>();
+    }
 
-        public List<GoalProbability> AwayGoalProbabilities { get; private set; }
-
-        public List<ScoreProbability> ScoreProbabilities { get; private set; }
-
-        public GoalDistribution()
+    public void CalculateDistribution()
+    {
+        foreach (var homeGoalProbability in HomeGoalProbabilities)
         {
-            HomeGoalProbabilities = new List<GoalProbability>();
-            AwayGoalProbabilities = new List<GoalProbability>();
-            ScoreProbabilities = new List<ScoreProbability>();
-        }
-
-        public void CalculateDistribution()
-        {
-            foreach(var homeGoalProbability in HomeGoalProbabilities)
+            foreach (var awayGoalProbability in AwayGoalProbabilities)
             {
-                foreach(var awayGoalProbability in AwayGoalProbabilities)
-                {
-                    var scoreProbability = new ScoreProbability(homeGoalProbability, awayGoalProbability);
-                    scoreProbability.CalculateProbability();
-                    ScoreProbabilities.Add(scoreProbability);
-                }
+                var scoreProbability = new ScoreProbability(homeGoalProbability, awayGoalProbability);
+                scoreProbability.CalculateProbability();
+                ScoreProbabilities.Add(scoreProbability);
             }
         }
     }

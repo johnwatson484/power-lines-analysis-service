@@ -1,124 +1,115 @@
+using Microsoft.Extensions.Options;
 using PowerLinesAnalysisService.Extensions;
 using PowerLinesAnalysisService.Models;
-using System;
-using System.Linq;
 
-namespace PowerLinesAnalysisService.Analysis
+namespace PowerLinesAnalysisService.Analysis;
+
+public class OddsCalculator(int fixtureId, GoalDistribution goalDistribution, ThresholdOptions thresholdOptions)
 {
-    public class OddsCalculator
+    readonly GoalDistribution goalDistribution = goalDistribution;
+    readonly ThresholdOptions thresholdOptions = thresholdOptions;
+    readonly MatchOdds matchOdds = new MatchOdds(fixtureId);
+
+    public MatchOdds GetMatchOdds()
     {
-        readonly GoalDistribution goalDistribution;
-        readonly Threshold threshold;
-        readonly MatchOdds matchOdds;
+        CalculateResultOdds();
+        CalculateScoreOdds();
+        CalculateRecommendations();
+        return matchOdds;
+    }
 
-        public OddsCalculator(int fixtureId, GoalDistribution goalDistribution, Threshold threshold)
+    private decimal ConvertProbabilityToOdds(decimal probability)
+    {
+        return Math.Round(DecimalExtensions.SafeDivide(1, probability), 2);
+    }
+
+    private void CalculateResultOdds()
+    {
+        CalculateResultHomeOdds();
+        CalculateResultDrawOdds();
+        CalculateResultAwayOdds();
+    }
+
+    private void CalculateResultHomeOdds()
+    {
+        matchOdds.Home = ConvertProbabilityToOdds(GetResultProbability('H'));
+    }
+
+    private void CalculateResultDrawOdds()
+    {
+        matchOdds.Draw = ConvertProbabilityToOdds(GetResultProbability('D'));
+    }
+
+    private void CalculateResultAwayOdds()
+    {
+        matchOdds.Away = ConvertProbabilityToOdds(GetResultProbability('A'));
+    }
+
+    private decimal GetResultProbability(char result)
+    {
+        return goalDistribution.ScoreProbabilities.Where(x => x.Result == result).Sum(x => x.Probability);
+    }
+
+    private void CalculateScoreOdds()
+    {
+        CalculateHomeGoals();
+        CalculateAwayGoals();
+        CalculateExpectedGoalsOdds();
+    }
+
+    private void CalculateHomeGoals()
+    {
+        matchOdds.HomeGoals = goalDistribution.HomeGoalProbabilities.OrderByDescending(x => x.Probability).First().Goals;
+    }
+
+    private void CalculateAwayGoals()
+    {
+        matchOdds.AwayGoals = goalDistribution.AwayGoalProbabilities.OrderByDescending(x => x.Probability).First().Goals;
+    }
+
+    private decimal GetExpectedGoalsProbability()
+    {
+        return goalDistribution.ScoreProbabilities.First(x => x.HomeGoalProbability.Goals == matchOdds.HomeGoals
+            && x.AwayGoalProbability.Goals == matchOdds.AwayGoals).Probability;
+    }
+
+    private void CalculateExpectedGoalsOdds()
+    {
+        matchOdds.ExpectedGoals = ConvertProbabilityToOdds(GetExpectedGoalsProbability());
+    }
+
+    private void CalculateRecommendations()
+    {
+        var prediction = CalculatePrediction();
+        var predictionProbability = GetResultProbability(prediction);
+        if (predictionProbability > thresholdOptions.Higher)
         {
-            this.goalDistribution = goalDistribution;
-            this.threshold = threshold;
-            matchOdds = new MatchOdds(fixtureId);
+            matchOdds.Recommended = Char.ToString(prediction);
         }
-
-        public MatchOdds GetMatchOdds()
+        if (predictionProbability > thresholdOptions.Lower)
         {
-            CalculateResultOdds();
-            CalculateScoreOdds();
-            CalculateRecommendations();
-            return matchOdds;
+            matchOdds.LowerRecommended = Char.ToString(prediction);
         }
+    }
 
-        private decimal ConvertProbabilityToOdds(decimal probability)
+    private char CalculatePrediction()
+    {
+        var homeProbability = GetResultProbability('H');
+        var drawProbability = GetResultProbability('D');
+        var awayProbability = GetResultProbability('A');
+
+        if (homeProbability > drawProbability && homeProbability > awayProbability)
         {
-            return Math.Round(DecimalExtensions.SafeDivide(1, probability), 2);
+            return 'H';
         }
-
-        private void CalculateResultOdds()
+        if (drawProbability > homeProbability && drawProbability > awayProbability)
         {
-            CalculateResultHomeOdds();
-            CalculateResultDrawOdds();
-            CalculateResultAwayOdds();
+            return 'D';
         }
-
-        private void CalculateResultHomeOdds()
+        if (awayProbability > homeProbability && awayProbability > drawProbability)
         {
-            matchOdds.Home = ConvertProbabilityToOdds(GetResultProbability('H'));
+            return 'A';
         }
-
-        private void CalculateResultDrawOdds()
-        {
-            matchOdds.Draw = ConvertProbabilityToOdds(GetResultProbability('D'));
-        }
-
-        private void CalculateResultAwayOdds()
-        {
-            matchOdds.Away = ConvertProbabilityToOdds(GetResultProbability('A'));
-        }
-
-        private decimal GetResultProbability(char result)
-        {
-            return goalDistribution.ScoreProbabilities.Where(x => x.Result == result).Sum(x => x.Probability);
-        }
-
-        private void CalculateScoreOdds()
-        {
-            CalculateHomeGoals();
-            CalculateAwayGoals();
-            CalculateExpectedGoalsOdds();
-        }
-
-        private void CalculateHomeGoals()
-        {
-            matchOdds.HomeGoals = goalDistribution.HomeGoalProbabilities.OrderByDescending(x => x.Probability).First().Goals;
-        }
-
-        private void CalculateAwayGoals()
-        {
-            matchOdds.AwayGoals = goalDistribution.AwayGoalProbabilities.OrderByDescending(x => x.Probability).First().Goals;
-        }
-
-        private decimal GetExpectedGoalsProbability()
-        {
-            return goalDistribution.ScoreProbabilities.First(x => x.HomeGoalProbability.Goals == matchOdds.HomeGoals
-                && x.AwayGoalProbability.Goals == matchOdds.AwayGoals).Probability;
-        }
-
-        private void CalculateExpectedGoalsOdds()
-        {
-            matchOdds.ExpectedGoals = ConvertProbabilityToOdds(GetExpectedGoalsProbability());
-        }
-
-        private void CalculateRecommendations()
-        {
-            var prediction = CalculatePrediction();
-            var predictionProbability = GetResultProbability(prediction);
-            if (predictionProbability > threshold.Higher)
-            {
-                matchOdds.Recommended = Char.ToString(prediction);
-            }
-            if (predictionProbability > threshold.Lower)
-            {
-                matchOdds.LowerRecommended = Char.ToString(prediction);
-            }
-        }
-
-        private char CalculatePrediction()
-        {
-            var homeProbability = GetResultProbability('H');
-            var drawProbability = GetResultProbability('D');
-            var awayProbability = GetResultProbability('A');
-
-            if (homeProbability > drawProbability && homeProbability > awayProbability)
-            {
-                return 'H';
-            }
-            if (drawProbability > homeProbability && drawProbability > awayProbability)
-            {
-                return 'D';
-            }
-            if (awayProbability > homeProbability && awayProbability > drawProbability)
-            {
-                return 'A';
-            }
-            return 'X';
-        }
+        return 'X';
     }
 }

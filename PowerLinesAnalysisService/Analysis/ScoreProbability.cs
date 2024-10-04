@@ -1,36 +1,29 @@
-namespace PowerLinesAnalysisService.Analysis
+namespace PowerLinesAnalysisService.Analysis;
+
+public class ScoreProbability(GoalProbability homeGoalProbability, GoalProbability awayGoalProbability)
 {
-    public class ScoreProbability
+    public GoalProbability HomeGoalProbability { get; private set; } = homeGoalProbability;
+    public GoalProbability AwayGoalProbability { get; private set; } = awayGoalProbability;
+    public decimal Probability { get; private set; }
+
+    public char Result
     {
-        public GoalProbability HomeGoalProbability { get; private set; }
-        public GoalProbability AwayGoalProbability { get; private set; }
-        public decimal Probability { get; private set; }
-
-        public char Result
+        get
         {
-            get
+            if (HomeGoalProbability.Goals > AwayGoalProbability.Goals)
             {
-                if(HomeGoalProbability.Goals > AwayGoalProbability.Goals)
-                {
-                    return 'H';
-                }
-                if(AwayGoalProbability.Goals > HomeGoalProbability.Goals)
-                {
-                    return 'A';
-                }
-                return 'D';
+                return 'H';
             }
+            if (AwayGoalProbability.Goals > HomeGoalProbability.Goals)
+            {
+                return 'A';
+            }
+            return 'D';
         }
+    }
 
-        public ScoreProbability(GoalProbability homeGoalProbability, GoalProbability awayGoalProbability)
-        {
-            HomeGoalProbability = homeGoalProbability;
-            AwayGoalProbability = awayGoalProbability;
-        }
-
-        public void CalculateProbability()
-        {
-            Probability = HomeGoalProbability.Probability * AwayGoalProbability.Probability;
-        }
+    public void CalculateProbability()
+    {
+        Probability = HomeGoalProbability.Probability * AwayGoalProbability.Probability;
     }
 }

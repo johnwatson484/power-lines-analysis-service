@@ -3,13 +3,10 @@ services:
     build:
       target: development
     depends_on: 
-      - power-lines-message
-      - power-lines-analysis-service-postgres
-    entrypoint: >
-      sh -c "
-        scripts/wait-for.sh power-lines-message:5672 --
-        scripts/wait-for.sh power-lines-analysis-service-postgres:6003 --
-        dotnet watch --project ./PowerLinesAnalysisService run"
+      power-lines-message:
+        condition: service_healthy
+      power-lines-analysis-service-postgres:
+        condition: service_healthy
     ports:
       - "5003:5003"
     environment:
@@ -17,8 +14,6 @@ services:
       Message__Host: power-lines-message
     volumes:
       - ./PowerLinesAnalysisService:/home/dotnet/PowerLinesAnalysisService
-      - ./PowerLinesAnalysisService.Tests:/home/dotnet/PowerLinesAnalysisService.Tests
-      - ./scripts:/home/dotnet/scripts
     networks:
       - power-lines
 
@@ -36,6 +31,12 @@ services:
       - "5672:5672"
     networks:
       - power-lines
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping --erlang-cookie rabbitmq
+      interval: 10s
+      retries: 5
+      start_period: 1s
+      timeout: 10s
 
   power-lines-analysis-service-postgres:
     image: postgres:11.4-alpine
@@ -49,6 +50,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - power-lines
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 1s
+      timeout: 10s
 
 volumes:
   postgres_data: {}

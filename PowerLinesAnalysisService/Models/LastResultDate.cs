@@ -1,17 +1,8 @@
-using System;
+namespace PowerLinesAnalysisService.Models;
 
-namespace PowerLinesAnalysisService.Models
+public class LastResultDate(DateTime? date)
 {
-    public class LastResultDate
-    {
-        public bool Available { get; set; }
+    public bool Available { get; set; } = date != null;
 
-        public DateTime? Date { get; set; }
-
-        public LastResultDate(DateTime? date)
-        {
-            Available = date != null;
-            Date = date;
-        }
-    }
+    public DateTime? Date { get; set; } = date;
 }

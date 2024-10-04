@@ -1,9 +1,8 @@
 using PowerLinesAnalysisService.Models;
 
-namespace PowerLinesAnalysisService.Analysis
+namespace PowerLinesAnalysisService.Analysis;
+
+public interface IAnalysisService
 {
-    public interface IAnalysisService
-    {
-        MatchOdds GetMatchOdds(Fixture fixture);
-    }
+    MatchOdds GetMatchOdds(Fixture fixture);
 }

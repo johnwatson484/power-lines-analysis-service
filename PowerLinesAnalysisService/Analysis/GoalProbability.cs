@@ -1,14 +1,7 @@
-namespace PowerLinesAnalysisService.Analysis
-{
-    public class GoalProbability
-    {
-        public int Goals { get; private set; }
-        public decimal Probability { get; private set; }
+namespace PowerLinesAnalysisService.Analysis;
 
-        public GoalProbability(int goals, decimal probability)
-        {
-            Goals = goals;
-            Probability = probability;
-        }
-    }
+public class GoalProbability(int goals, decimal probability)
+{
+    public int Goals { get; private set; } = goals;
+    public decimal Probability { get; private set; } = probability;
 }

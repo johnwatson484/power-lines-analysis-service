@@ -1,0 +1,13 @@
+{{- include "helm-library.configmap" (list . "power-lines-analysis-service.configmap") -}}
+{{- define "power-lines-analysis-service.configmap" -}}
+data:
+  MESSAGE__HOST: {{ quote .Values.message.host }}
+  MESSAGE__PORT: {{ quote .Values.message.port }}
+  MESSAGE__RESULTQUEUE: {{ quote .Values.message.resultQueue }}
+  MESSAGE__RESULTSUBSCRIPTION: {{ quote .Values.message.resultSubscription }}
+  MESSAGE__ANALYSISQUEUE: {{ quote .Values.message.analysisQueue }}
+  MESSAGE__ANALYSISSUBSCRIPTION: {{ quote .Values.message.analysisSubscription }}
+  MESSAGE__ODDSQUEUE: {{ quote .Values.message.oddsQueue }}
+  COMPLUS_ENABLEDIAGNOSTICS: {{ quote .Values.container.comPlusEnableDiagnostics }}
+  ASPNETCORE_ENVIRONMENT: {{ quote .Values.environment }}
+{{- end -}}

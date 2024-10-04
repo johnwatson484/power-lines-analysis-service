@@ -1,9 +1,0 @@
-services:
-  power-lines-analysis-service:
-    build: 
-      context: .
-      target: development
-    image: power-lines-analysis-service-test
-    container_name: power-lines-analysis-service-test
-    entrypoint: dotnet test ./PowerLinesAnalysisService.Tests/PowerLinesAnalysisService.Tests.csproj
-    

@@ -1,24 +1,21 @@
-using System;
+namespace PowerLinesAnalysisService.Analysis;
 
-namespace PowerLinesAnalysisService.Analysis
+public class Poisson
 {
-    public class Poisson
-    {
-        const double euler = 2.71828;
-        
-        public double GetProbability(int randomVariable, double averageRateOfSuccess)
-        {
-            return Math.Pow(euler, -averageRateOfSuccess) * Math.Pow(averageRateOfSuccess, randomVariable) / Factorial(randomVariable);
-        }
+    const double euler = 2.71828;
 
-        private int Factorial(int n)
+    public double GetProbability(int randomVariable, double averageRateOfSuccess)
+    {
+        return Math.Pow(euler, -averageRateOfSuccess) * Math.Pow(averageRateOfSuccess, randomVariable) / Factorial(randomVariable);
+    }
+
+    private int Factorial(int n)
+    {
+        int value = 1;
+        for (int i = 1; i <= n; i++)
         {
-            int value = 1;
-            for (int i = 1; i <= n; i++)
-            {
-                value *= i;
-            }
-            return value;
+            value *= i;
         }
+        return value;
     }
 }

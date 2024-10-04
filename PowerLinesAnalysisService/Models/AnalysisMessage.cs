@@ -1,9 +1,8 @@
-namespace PowerLinesAnalysisService.Models
-{
-    public class AnalysisMessage
-    {
-        public Fixture Fixture { get; set; }
+namespace PowerLinesAnalysisService.Models;
 
-        public string Sender { get; set; }
-    }
+public class AnalysisMessage
+{
+    public Fixture Fixture { get; set; }
+
+    public string Sender { get; set; }
 }
