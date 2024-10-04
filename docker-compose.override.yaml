@@ -10,8 +10,8 @@ services:
     ports:
       - "5003:5003"
     environment:
-      ConnectionStrings__PowerLinesAnalysisService: "Server=power-lines-analysis-service-postgres;Port=5432;Database=power_lines_analysis;User Id=postgres;Password=postgres;"
-      Message__Host: power-lines-message
+      CONNECTIONSTRINGS__POWERLINESANALYSISSERVICE: "Server=power-lines-analysis-service-postgres;Port=5432;Database=power_lines_analysis;User Id=postgres;Password=postgres;"
+      MESSAGE__HOST: power-lines-message
     volumes:
       - ./PowerLinesAnalysisService:/home/dotnet/PowerLinesAnalysisService
     networks:
