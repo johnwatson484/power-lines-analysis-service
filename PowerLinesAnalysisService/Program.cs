@@ -37,11 +37,9 @@ ApplyMigrations(app.Services);
 
 await app.RunAsync();
 
-void ApplyMigrations(IServiceProvider serviceProvider)
+static void ApplyMigrations(IServiceProvider serviceProvider)
 {
     using var scope = serviceProvider.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 }
-
-

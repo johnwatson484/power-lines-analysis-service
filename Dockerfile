@@ -20,7 +20,7 @@ ENV PORT=${PORT}
 ENV ASPNETCORE_URLS=http://*:5003
 ENV ASPNETCORE_ENVIRONMENT=development
 EXPOSE ${PORT}
-# Override entrypoint using shell form so that environment variables are picked up
+
 ENTRYPOINT ["dotnet", "watch", "--project", "./PowerLinesAnalysisService", "run"]
 
 # Production
@@ -37,5 +37,5 @@ ARG PORT=5003
 ENV ASPNETCORE_URLS=http://*:5003
 ENV ASPNETCORE_ENVIRONMENT=production
 EXPOSE ${PORT}
-# Override entrypoint using shell form so that environment variables are picked up
+
 ENTRYPOINT ["dotnet", "PowerLinesAnalysisService.dll"]
