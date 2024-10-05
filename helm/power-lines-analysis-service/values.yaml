@@ -7,6 +7,8 @@ container:
   port: 5003
   comPlusEnableDiagnostics: 0
 
+configMap: {}
+
 message:
   host: services.lynxmagnus.com
   port: 5672
