@@ -11,10 +11,6 @@ RUN addgroup -g 1000 dotnet \
 USER dotnet
 WORKDIR /home/dotnet
 
-COPY --chown=dotnet:dotnet ./Directory.Build.props ./Directory.Build.props
-RUN mkdir -p /home/dotnet/PowerLinesAnalysisService/
-COPY --chown=dotnet:dotnet ./PowerLinesAnalysisService/*.csproj ./PowerLinesAnalysisService/
-RUN dotnet restore ./PowerLinesAnalysisService/PowerLinesAnalysisService.csproj
 COPY --chown=dotnet:dotnet . .
 
 RUN dotnet publish ./PowerLinesAnalysisService/ -c Release -o /home/dotnet/out
